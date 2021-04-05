@@ -1,0 +1,22 @@
+name: ${project.name}
+version: ${project.version}
+description: ${project.description}
+main: net.justminecraft.plots.block.JustPlotsPublicBlock
+author: KK964
+api-version: 1.13
+depend: [JustPlots]
+website: https://github.com/KK964/JustPlots-PublicRedstone
+permissions:
+  justplots.public:
+    description: Add a block that anyone can use
+  justplots.public.other:
+    description:  Add a block that anyone can use on another player's plot
+  justplots.user:
+    description: All the user permissions
+    default: true
+    children:
+      justplots.public: true
+  justplots.admin:
+    description: All the admin permissions
+    children:
+      justplots.public.other: true
