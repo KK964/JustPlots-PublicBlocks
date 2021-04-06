@@ -24,14 +24,17 @@ import java.util.Set;
 public class JustPlotsPublicBlock extends JavaPlugin {
 
     private static HashMap<String, HashSet<Location>> availablePublicLocations = new HashMap<>();
+    private static JustPlotsPublicBlock plugin;
 
     @NotNull
-    private static HashSet<Location> getLocations(String plotId) {
+    public static HashSet<Location> getLocations(String plotId) {
         return availablePublicLocations.computeIfAbsent(plotId, key -> new HashSet<>());
     }
 
     public static boolean isPublic(Plot plot, Location location) {
-        return isPublic(plot.toString(), location);
+        if (plot != null)
+            return isPublic(plot.toString(), location);
+        return false;
     }
 
     public static boolean isPublic(String plotId, Location location) {
@@ -79,12 +82,16 @@ public class JustPlotsPublicBlock extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        plugin = this;
+
         getServer().getPluginManager().registerEvents(new net.justminecraft.plots.block.Listener(), this);
 
         getServer().getScheduler().runTaskAsynchronously(this, this::loadLocations);
 
         JustPlots.getCommandExecuter().addCommand(new PublicBlockCommand());
         JustPlots.getCommandExecuter().addCommand(new PrivateBlockCommand());
+        JustPlots.getCommandExecuter().addCommand(new ShowPublicBlocksCommand());
 
         new PlotInfoEntry("Public blocks") {
             @Override
@@ -169,5 +176,9 @@ public class JustPlotsPublicBlock extends JavaPlugin {
         int y = (int) location.getY();
         int z = (int) location.getZ();
         return x+";"+y+";"+z;
+    }
+
+    public static JustPlotsPublicBlock getPlugin() {
+        return plugin;
     }
 }
