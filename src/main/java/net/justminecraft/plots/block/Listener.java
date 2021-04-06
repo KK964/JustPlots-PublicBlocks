@@ -6,6 +6,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -32,7 +33,9 @@ public class Listener implements org.bukkit.event.Listener {
 
         Plot plot = JustPlots.getPlotAt(location);
 
-        if (plot != null && JustPlotsPublicBlock.isPublic(plot, location) && !plot.isAdded(player)) {
+        Material material = location.getBlock().getType();
+
+        if (plot != null && (JustPlotsPublicBlock.isPublic(plot, location) || material.name().contains("PRESSURE_PLATE")) && !plot.isAdded(player)) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     new ComponentBuilder("You used a public block").color(ChatColor.GREEN).create());
             cancellable.setCancelled(false);
