@@ -32,7 +32,7 @@ public class Listener implements org.bukkit.event.Listener {
 
         Plot plot = JustPlots.getPlotAt(location);
 
-        if (!((plot == null || !plot.isAdded(player)) && (!player.hasPermission("justplots.edit.other") && !JustPlotsPublicBlock.isPublic(plot, location)))) {
+        if (plot != null && JustPlotsPublicBlock.isPublic(plot, location) && !plot.isAdded(player)) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,
                     new ComponentBuilder("You used a public block").color(ChatColor.GREEN).create());
             cancellable.setCancelled(false);
