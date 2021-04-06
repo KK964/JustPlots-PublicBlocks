@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class Listener implements org.bukkit.event.Listener {
@@ -36,7 +37,8 @@ public class Listener implements org.bukkit.event.Listener {
                     new ComponentBuilder("You cannot build here").color(ChatColor.RED).create());
 
             cancellable.setCancelled(true);
-        }
+        } else
+            cancellable.setCancelled(false);
     }
 
     @EventHandler (priority = EventPriority.HIGHEST)
@@ -51,6 +53,29 @@ public class Listener implements org.bukkit.event.Listener {
             if(!block.isEmpty()) {
                 playerModify(event.getPlayer(), block, event);
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+
+        Location location = event.getBlock().getLocation();
+
+        Player player = event.getPlayer();
+
+        if (!JustPlots.isPlotWorld(location.getWorld())) {
+            return; // Not a plot world
+        }
+
+        Plot plot = JustPlots.getPlotAt(location);
+
+        if(plot == null || !plot.isAdded(player)) {
+            return; // Not a plot, or not added
+        }
+
+        if(JustPlotsPublicBlock.isPublic(plot, location)) {
+            JustPlotsPublicBlock.removePublicLocation(plot, location);
+            player.sendMessage(ChatColor.RED + "Setting " + JustPlotsPublicBlock.locationString(location) + " to a private block because it was broken.");
         }
     }
 }
